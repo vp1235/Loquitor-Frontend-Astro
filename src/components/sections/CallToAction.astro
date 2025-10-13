@@ -1,0 +1,11 @@
+---
+interface Btn { label: string; href: string }
+interface Props { text: string; button?: Btn | null }
+const { text, button }: Props = Astro.props;
+---
+<section class="section">
+  <div class="container" style="text-align:center;">
+    <p style="font-size:1.25rem;margin-bottom:1rem;">{text}</p>
+    {button && <a class="btn" href={button.href}>{button.label}</a>}
+  </div>
+</section>

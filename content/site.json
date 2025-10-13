@@ -1,0 +1,79 @@
+{
+  "site": {
+    "title": "Client Site",
+    "description": "A minimal, fast, accessible website.",
+    "logo": "/favicon.svg",
+    "brandColor": "#0ea5e9"
+  },
+  "nav": [
+    { "label": "Home", "href": "/" },
+    { "label": "Features", "href": "/features" },
+    { "label": "Contact", "href": "/contact" }
+  ],
+  "pages": [
+    {
+      "slug": "",
+      "title": "Home",
+      "sections": [
+        {
+          "type": "hero",
+          "props": {
+            "eyebrow": "Welcome",
+            "headline": "Your Headline Here",
+            "subcopy": "Short value proposition. All content swaps via JSON.",
+            "primaryCta": { "label": "Get Started", "href": "/contact" }
+          }
+        },
+        {
+          "type": "features",
+          "props": {
+            "items": [
+              { "title": "Fast", "text": "Static, CDN-first." },
+              { "title": "Simple", "text": "Edit one JSON and rebuild." },
+              { "title": "Private", "text": "No trackers by default." }
+            ]
+          }
+        },
+        {
+          "type": "cta",
+          "props": {
+            "text": "Ready to talk?",
+            "button": { "label": "Contact Us", "href": "/contact" }
+          }
+        }
+      ]
+    },
+    {
+      "slug": "features",
+      "title": "Features",
+      "sections": [
+        {
+          "type": "features",
+          "props": {
+            "items": [
+              { "title": "Widget A", "text": "Describe a capability." },
+              { "title": "Widget B", "text": "Describe another." }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "contact",
+      "title": "Contact",
+      "sections": [
+        {
+          "type": "hero",
+          "props": {
+            "headline": "Contact",
+            "subcopy": "Fill the form or email us.",
+            "primaryCta": null
+          }
+        }
+      ]
+    }
+  ],
+  "footer": {
+    "copyright": "© {{YEAR}} Client Name"
+  }
+}

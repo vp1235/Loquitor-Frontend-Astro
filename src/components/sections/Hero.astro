@@ -1,0 +1,18 @@
+---
+interface Cta { label: string; href: string }
+interface Props {
+  eyebrow?: string;
+  headline?: string;
+  subcopy?: string;
+  primaryCta?: Cta | null;
+}
+const { eyebrow, headline, subcopy, primaryCta }: Props = Astro.props;
+---
+<section class="section">
+  <div class="container">
+    {eyebrow && <div style="color:var(--brand);font-weight:700;margin-bottom:.25rem;">{eyebrow}</div>}
+    {headline && <h1 style="font-size:2.25rem;line-height:1.1;margin:.25rem 0 1rem 0;">{headline}</h1>}
+    {subcopy && <p class="card" style="border:none;padding:0;color:var(--muted);max-width:60ch;">{subcopy}</p>}
+    {primaryCta && <p style="margin-top:1.25rem;"><a class="btn" href={primaryCta.href}>{primaryCta.label}</a></p>}
+  </div>
+</section>

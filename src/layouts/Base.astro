@@ -1,0 +1,47 @@
+---
+import "../styles/theme.css";
+import type { SiteConfig, NavItem, FooterCfg } from "../types/site";
+
+interface Props {
+  site: SiteConfig["site"];
+  nav?: NavItem[];
+  footer?: FooterCfg;
+}
+
+const { site, nav = [], footer }: Props = Astro.props;
+const title = site?.title ?? "Site";
+const desc = site?.description ?? "";
+const brand = site?.brandColor ?? "#0ea5e9";
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={desc} />
+    <meta name="theme-color" content={brand} />
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+  </head>
+  <body style={`--brand:${brand}`}>
+    <header class="container" style="display:flex;justify-content:space-between;align-items:center;">
+      <a href="/" style="display:flex;gap:.5rem;align-items:center;">
+        <img src="/favicon.svg" alt="" width="24" height="24" />
+        <strong>{title}</strong>
+      </a>
+      <nav class="nav">
+        {nav.map((n: NavItem) => <a href={n.href}>{n.label}</a>)}
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="container">
+      <p style="color:var(--muted);">
+        {footer?.copyright?.replace("{{YEAR}}", String(new Date().getFullYear()))}
+      </p>
+    </footer>
+  </body>
+</html>

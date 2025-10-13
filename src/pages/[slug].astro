@@ -1,0 +1,38 @@
+---
+import Base from "../layouts/Base.astro";
+import { sectionMap } from "../utils/sectionMap";
+import siteConfig from "../../content/site.json";
+import type { SiteConfig, Section } from "../types/site";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  const cfg = siteConfig as SiteConfig;
+  // Any page with a non-empty slug becomes /<slug>
+  const slugs = (cfg.pages ?? []).filter(p => (p.slug ?? "") !== "");
+  return slugs.map(p => ({ params: { slug: p.slug } }));
+}
+
+const cfg = siteConfig as SiteConfig;
+const slug = Astro.params.slug!;
+const page = cfg.pages.find((p) => p.slug === slug);
+
+if (!page) {
+  return Astro.redirect("/", 302);
+}
+
+const sections: Section[] = page.sections ?? [];
+---
+
+<Base site={cfg.site} nav={cfg.nav} footer={cfg.footer}>
+  <div class="container">
+    {page.title && <h1 style="margin: 1rem 0 0.5rem 0;">{page.title}</h1>}
+  </div>
+
+  {await Promise.all(
+    sections.map(async (s) => {
+      const Cmp = (await sectionMap[s.type]()).default;
+      return <Cmp {...(s.props ?? {})} />;
+    })
+  )}
+</Base>

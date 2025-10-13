@@ -1,0 +1,19 @@
+---
+import Base from "../layouts/Base.astro";
+import { sectionMap } from "../utils/sectionMap";
+import siteConfig from "../../content/site.json";
+import type { SiteConfig, Section } from "../types/site";
+
+const cfg = siteConfig as SiteConfig;
+const page = cfg.pages.find((p) => (p.slug ?? "") === "")!;
+const sections: Section[] = page?.sections ?? [];
+---
+
+<Base site={cfg.site} nav={cfg.nav} footer={cfg.footer}>
+  {await Promise.all(
+    sections.map(async (s) => {
+      const Cmp = (await sectionMap[s.type]()).default;
+      return <Cmp {...(s.props ?? {})} />;
+    })
+  )}
+</Base>

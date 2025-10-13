@@ -1,0 +1,11 @@
+{
+  "name": "Loquitor Template Site",
+  "short_name": "Template Site",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "theme_color": "#111111",
+  "background_color": "#ffffff"
+}
