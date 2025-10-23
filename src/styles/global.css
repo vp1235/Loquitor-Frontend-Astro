@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Optimize scrolling performance */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  /* Reduce repaints during scroll */
+  overflow-x: hidden;
+}
+
+/* Force GPU acceleration for smoother animations */
+@layer utilities {
+  .transform-gpu {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+/* Reduce layout thrashing */
+section {
+  contain: layout style;
+}

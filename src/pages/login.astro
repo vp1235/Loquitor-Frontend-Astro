@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import HomePage from '../components/HomePage';
+import LoginPageWrapper from '../components/LoginPageWrapper';
 ---
 
 <!DOCTYPE html>
@@ -8,8 +8,8 @@ import HomePage from '../components/HomePage';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Enterprise AI with complete customization, real-time agentic analysis, and seamless model compatibility across any deployment architecture." />
-    <title>Loquitor - AI Solutions Built for You</title>
+    <meta name="description" content="Sign in to Loquitor" />
+    <title>Login - Loquitor</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <script is:inline>
       // Set theme before page renders to avoid flash
@@ -27,6 +27,6 @@ import HomePage from '../components/HomePage';
       />
     </div>
 
-    <HomePage client:only="react" />
+    <LoginPageWrapper client:only="react" />
   </body>
 </html>

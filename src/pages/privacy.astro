@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MarkdownContent from '../components/MarkdownContent';
+import { privacyPolicy } from '../legal/privacy';
+---
+
+<BaseLayout title="Privacy Policy - Loquitor" description="Privacy Policy for Loquitor AI">
+  <MarkdownContent client:load content={privacyPolicy} title="Privacy Policy" />
+</BaseLayout>

@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MarkdownContent from '../components/MarkdownContent';
+import { termsOfService } from '../legal/terms';
+---
+
+<BaseLayout title="Terms of Service - Loquitor" description="Terms of Service for Loquitor AI">
+  <MarkdownContent client:load content={termsOfService} title="Terms of Service" />
+</BaseLayout>

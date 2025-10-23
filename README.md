@@ -1,29 +1,66 @@
-# Astro Starter Kit: Minimal
+# Loquitor.ai - Astro
 
-```sh
-npm create astro@latest -- --template minimal
+Enterprise AI solutions platform built with Astro and React Islands architecture.
+
+## Features
+
+- 🎨 **5 Content Vibes** - Customizable content themes (Professional, Data Science, Global Commerce, Security First, Innovation Lab)
+- 🌓 **Dark/Light Theme** - Persistent theme switching with localStorage
+- 🔐 **Google OAuth** - Secure authentication with Gmail integration
+- 📧 **AI-Powered Inbox** - Gmail integration with AI reply generation
+- ⚡ **High Performance** - Astro's partial hydration for optimal loading
+- 📱 **Fully Responsive** - Mobile-first Tailwind CSS design
+
+## Quick Start
+
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Configure environment** (see Setup section below)
+
+3. **Start development server**:
+   ```bash
+   npm run dev
+   ```
+
+Visit `http://localhost:4321`
+
+## Setup
+
+### Environment Variables
+
+Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Required variables:
+- `PUBLIC_BACKEND_URL` - Your backend API URL
+- `PUBLIC_GOOGLE_OAUTH_CLIENT_ID` - Google OAuth Client ID
 
-## 🚀 Project Structure
+### Google OAuth Setup
 
-Inside of your Astro project, you'll see the following folders and files:
+1. Create a project in [Google Cloud Console](https://console.cloud.google.com)
+2. Enable Google+ API
+3. Create OAuth 2.0 credentials
+4. Add authorized redirect URIs
+5. Copy Client ID to `.env`
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+## Project Structure
+
 ```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
+src/
+├── auth/              # Authentication context
+├── components/        # React components (islands)
+├── config/            # Configuration files
+├── context/           # React context providers
+├── layouts/           # Astro layouts
+├── legal/             # Legal content (terms, privacy)
+├── pages/             # Astro pages (routes)
+└── styles/            # Global styles
+```
 
 ## 🧞 Commands
 
