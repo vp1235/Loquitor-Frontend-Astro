@@ -1,11 +1,9 @@
-import { Settings, Activity, Layers, Terminal, Users, MessageSquare, Zap, Network, FileSearch, Database, BookOpen, FlaskConical, ChevronRight, Brain, GitBranch, Globe, BarChart, LineChart, TrendingUp, Languages, Lock, ShieldCheck, Lightbulb, Cpu, Workflow } from 'lucide-react';
-
 export const getVibeContent = (vibe) => {
   const content = {
     professional: {
       hero: {
         badge: {
-          icon: FlaskConical,
+          icon: 'FlaskConical',
           text: 'Research-Driven AI Innovation'
         },
         title: {
@@ -20,25 +18,25 @@ export const getVibeContent = (vibe) => {
         {
           title: 'Bespoke Enterprise Solutions',
           description: 'Fully customized AI systems tailored to your specific business requirements',
-          icon: Settings,
+          icon: 'Settings',
           gradient: 'from-emerald-600 to-teal-600'
         },
         {
           title: 'Real-time Agentic Analysis',
           description: 'Advanced agents for external and internal data and document processing',
-          icon: Activity,
+          icon: 'Activity',
           gradient: 'from-blue-600 to-cyan-600'
         },
         {
           title: 'Universal Model Compatibility',
           description: 'Seamless cross-compatibility between local-API, local, and API models',
-          icon: Layers,
+          icon: 'Layers',
           gradient: 'from-orange-600 to-amber-600'
         },
         {
           title: 'Model Customization',
           description: 'Fine-tune and adapt models to your domain-specific needs',
-          icon: Terminal,
+          icon: 'Terminal',
           gradient: 'from-slate-600 to-zinc-600'
         }
       ],
@@ -49,7 +47,7 @@ export const getVibeContent = (vibe) => {
     dataScience: {
       hero: {
         badge: {
-          icon: BarChart,
+          icon: 'BarChart',
           text: 'Fundamental Statistical Research & Model Optimization'
         },
         title: {
@@ -64,25 +62,25 @@ export const getVibeContent = (vibe) => {
         {
           title: 'Statistical Model Fine-Tuning',
           description: 'Rigorous parameter optimization using advanced statistical methods and empirical validation',
-          icon: TrendingUp,
+          icon: 'TrendingUp',
           gradient: 'from-blue-600 to-indigo-600'
         },
         {
           title: 'Big Data Processing at Scale',
           description: 'Distributed systems for massive dataset analysis with statistical guarantees on accuracy',
-          icon: Database,
+          icon: 'Database',
           gradient: 'from-purple-600 to-pink-600'
         },
         {
           title: 'Research-Grade Analytics',
           description: 'Fundamental statistics research applied to real-world LLM deployment challenges',
-          icon: FlaskConical,
+          icon: 'FlaskConical',
           gradient: 'from-emerald-600 to-teal-600'
         },
         {
           title: 'Probabilistic Reasoning',
           description: 'Bayesian inference and uncertainty quantification for reliable AI decision-making',
-          icon: LineChart,
+          icon: 'LineChart',
           gradient: 'from-orange-600 to-red-600'
         }
       ],
@@ -93,7 +91,7 @@ export const getVibeContent = (vibe) => {
     globalCommerce: {
       hero: {
         badge: {
-          icon: Globe,
+          icon: 'Globe',
           text: 'Multilingual Cross-Compatible AI for Global Markets'
         },
         title: {
@@ -108,25 +106,25 @@ export const getVibeContent = (vibe) => {
         {
           title: 'Multilingual Semantic Understanding',
           description: 'Deep language comprehension across 100+ languages with cultural context preservation',
-          icon: Languages,
+          icon: 'Languages',
           gradient: 'from-blue-600 to-cyan-600'
         },
         {
           title: 'Cross-Border Commerce Intelligence',
           description: 'AI systems designed for international trade, compliance, and market-specific adaptation',
-          icon: Globe,
+          icon: 'Globe',
           gradient: 'from-emerald-600 to-teal-600'
         },
         {
           title: 'Universal Model Compatibility',
           description: 'Seamless deployment across regional infrastructures with local and cloud-hybrid options',
-          icon: Network,
+          icon: 'Network',
           gradient: 'from-purple-600 to-pink-600'
         },
         {
           title: 'Cultural & Contextual Adaptation',
           description: 'AI that understands regional nuances, regulations, and business practices',
-          icon: Brain,
+          icon: 'Brain',
           gradient: 'from-orange-600 to-amber-600'
         }
       ],
@@ -137,7 +135,7 @@ export const getVibeContent = (vibe) => {
     securityFirst: {
       hero: {
         badge: {
-          icon: ShieldCheck,
+          icon: 'ShieldCheck',
           text: 'Trust, Security & Risk Mitigation at Every Layer'
         },
         title: {
@@ -152,25 +150,25 @@ export const getVibeContent = (vibe) => {
         {
           title: 'Multi-Layer Security Architecture',
           description: 'Defense-in-depth approach with encryption, access controls, and audit trails at every level',
-          icon: Lock,
+          icon: 'Lock',
           gradient: 'from-red-600 to-orange-600'
         },
         {
           title: 'Risk Mitigation & Compliance',
           description: 'Proactive threat modeling, regulatory compliance, and continuous security monitoring',
-          icon: ShieldCheck,
+          icon: 'ShieldCheck',
           gradient: 'from-blue-600 to-indigo-600'
         },
         {
           title: 'Transparent Model Deployment',
           description: 'Full visibility into AI decision-making with explainable outputs and audit capabilities',
-          icon: FileSearch,
+          icon: 'FileSearch',
           gradient: 'from-emerald-600 to-teal-600'
         },
         {
           title: 'Trust-First Token Economics',
           description: 'Quality over cost-cutting: robust solutions without compromising on computational resources',
-          icon: Zap,
+          icon: 'Zap',
           gradient: 'from-purple-600 to-pink-600'
         }
       ],
@@ -181,7 +179,7 @@ export const getVibeContent = (vibe) => {
     innovationLab: {
       hero: {
         badge: {
-          icon: Lightbulb,
+          icon: 'Lightbulb',
           text: 'Semantic Complexity & Adaptive Intelligence'
         },
         title: {
@@ -196,25 +194,25 @@ export const getVibeContent = (vibe) => {
         {
           title: 'Descriptive Complexity Handling',
           description: 'AI systems that master complex, nuanced product catalogs and technical specifications across diverse domains',
-          icon: Workflow,
+          icon: 'Workflow',
           gradient: 'from-purple-600 to-fuchsia-600'
         },
         {
           title: 'Adaptive Semantic Intelligence',
           description: 'Deep understanding of context, meaning, and relationships in highly specialized knowledge domains',
-          icon: Brain,
+          icon: 'Brain',
           gradient: 'from-blue-600 to-cyan-600'
         },
         {
           title: 'Flexible Architecture Design',
           description: 'Modular, extensible systems that evolve with your business without complete rewrites',
-          icon: Cpu,
+          icon: 'Cpu',
           gradient: 'from-orange-600 to-red-600'
         },
         {
           title: 'Product-Focused Delivery',
           description: 'Commitment to viable, production-ready solutions with continuous iteration and refinement',
-          icon: Lightbulb,
+          icon: 'Lightbulb',
           gradient: 'from-emerald-600 to-teal-600'
         }
       ],
@@ -230,13 +228,13 @@ export const consultationServices = [
   {
     title: 'Strategy Consultation',
     description: 'Expert guidance on AI implementation strategy and roadmap planning',
-    icon: Users,
+    icon: 'Users',
     gradient: 'from-purple-600 to-pink-600'
   },
   {
     title: 'Technical Advisory',
     description: 'Deep technical consultation on model selection, architecture, and optimization',
-    icon: MessageSquare,
+    icon: 'MessageSquare',
     gradient: 'from-indigo-600 to-blue-600'
   },
   {

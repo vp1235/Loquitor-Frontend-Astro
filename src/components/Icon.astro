@@ -1,0 +1,61 @@
+---
+// Simple icon component that renders lucide icons using iconify
+export interface Props {
+  name: string;
+  class?: string;
+  size?: number;
+}
+
+const { name, class: className = '', size = 24 } = Astro.props;
+
+// Map of our icon names to iconify names
+const iconMap: Record<string, string> = {
+  'Settings': 'lucide:settings',
+  'Activity': 'lucide:activity',
+  'Layers': 'lucide:layers',
+  'Terminal': 'lucide:terminal',
+  'Users': 'lucide:users',
+  'MessageSquare': 'lucide:message-square',
+  'Zap': 'lucide:zap',
+  'Network': 'lucide:network',
+  'FileSearch': 'lucide:file-search',
+  'Database': 'lucide:database',
+  'BookOpen': 'lucide:book-open',
+  'FlaskConical': 'lucide:flask-conical',
+  'ChevronRight': 'lucide:chevron-right',
+  'Brain': 'lucide:brain',
+  'GitBranch': 'lucide:git-branch',
+  'Globe': 'lucide:globe',
+  'BarChart': 'lucide:bar-chart',
+  'LineChart': 'lucide:line-chart',
+  'TrendingUp': 'lucide:trending-up',
+  'Languages': 'lucide:languages',
+  'Lock': 'lucide:lock',
+  'ShieldCheck': 'lucide:shield-check',
+  'Lightbulb': 'lucide:lightbulb',
+  'Cpu': 'lucide:cpu',
+  'Workflow': 'lucide:workflow',
+  'Server': 'lucide:server',
+  'Mail': 'lucide:mail',
+  'Wand2': 'lucide:wand-2',
+  'Loader2': 'lucide:loader-2',
+  'RefreshCcw': 'lucide:refresh-ccw',
+  'Search': 'lucide:search',
+  'LogOut': 'lucide:log-out',
+  'ArrowRight': 'lucide:arrow-right',
+  'Menu': 'lucide:menu',
+};
+
+const iconName = iconMap[name] || `lucide:${name.toLowerCase().replace(/([A-Z])/g, '-$1').slice(1)}`;
+---
+
+<span class={`iconify ${className}`} data-icon={iconName} data-width={size} data-height={size}></span>
+
+<script>
+  // Load iconify if not already loaded
+  if (!window.Iconify) {
+    const script = document.createElement('script');
+    script.src = 'https://code.iconify.design/3/3.1.1/iconify.min.js';
+    document.head.appendChild(script);
+  }
+</script>

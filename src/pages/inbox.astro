@@ -1,8 +1,422 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import InboxPage from '../components/InboxPage';
+import Icon from '../components/Icon.astro';
+
+const user = Astro.locals.user;
+
+// Redirect if not authenticated (middleware should handle this, but double-check)
+if (!user) {
+  return Astro.redirect('/login');
+}
+
+const displayName = user?.name || user?.given_name || user?.email?.split('@')[0] || 'there';
 ---
 
-<BaseLayout title="Inbox - Loquitor" description="Your Gmail inbox with AI assistance">
-  <InboxPage client:load />
+<BaseLayout title="Inbox - Loquitor">
+  <div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <!-- Grid background -->
+    <div class="fixed inset-0 opacity-20 pointer-events-none">
+      <div
+        class="absolute inset-0"
+        style="background-image: linear-gradient(to right, #1e293b 1px, transparent 1px), linear-gradient(to bottom, #1e293b 1px, transparent 1px); background-size: 50px 50px;"
+      ></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="relative z-50 px-6 lg:px-12 py-6 flex justify-between items-center backdrop-blur-md bg-slate-900/70 border-b border-slate-800">
+      <a href="/" class="flex items-center space-x-3">
+        <img src="/logo_perfect.svg" alt="Loquitor Logo" class="h-10 w-auto" />
+        <span class="text-2xl font-bold tracking-tight">Loquitor</span>
+      </a>
+      <div class="hidden md:flex items-center space-x-3">
+        <a href="/#capabilities" class="px-3 py-2 text-slate-300 hover:text-white transition-colors">Capabilities</a>
+        <a href="/#research" class="px-3 py-2 text-slate-300 hover:text-white transition-colors">Research</a>
+        <a href="/#architecture" class="px-3 py-2 text-slate-300 hover:text-white transition-colors">Architecture</a>
+        <button
+          id="logout-btn"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg hover:from-emerald-500 hover:to-teal-500 transition-all shadow-lg hover:shadow-emerald-500/25"
+        >
+          <Icon name="LogOut" class="w-4 h-4" />
+          Sign out
+        </button>
+      </div>
+
+      <!-- Mobile CTA -->
+      <div class="md:hidden">
+        <button
+          id="logout-btn-mobile"
+          class="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg hover:from-emerald-500 hover:to-teal-500 transition-all shadow-lg hover:shadow-emerald-500/25"
+        >
+          Sign out
+        </button>
+      </div>
+    </nav>
+
+    <!-- Page content -->
+    <section class="relative z-10 px-6 lg:px-12 py-8 lg:py-10">
+      <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-3xl lg:text-4xl font-bold tracking-tight">
+              Hi, <span id="display-name">{displayName}</span>! 👋
+            </h1>
+            <p class="text-slate-400 mt-1">Here's your inbox.</p>
+          </div>
+
+          <!-- Search + Refresh -->
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <Icon name="Search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                id="search-input"
+                type="text"
+                placeholder="Search subject, sender, snippet…"
+                class="pl-9 pr-3 py-2.5 w-72 bg-slate-900/70 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/60 placeholder:text-slate-500 text-white"
+              />
+            </div>
+            <button
+              id="refresh-btn"
+              class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-700 bg-slate-900/60 hover:bg-slate-800/60 transition-colors"
+              title="Refresh"
+            >
+              <Icon name="RefreshCcw" class="w-4 h-4" id="refresh-icon" />
+              <span class="hidden sm:inline" id="refresh-text">Refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Error -->
+        <div id="error-container" class="mb-6 border border-red-500/30 bg-red-950/40 text-red-200 rounded-xl px-4 py-3 hidden" role="alert" aria-live="assertive"></div>
+
+        <!-- Main grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Left: List -->
+          <div class="lg:col-span-5 space-y-3">
+            <div class="bg-slate-900/70 backdrop-blur border border-slate-700 rounded-2xl p-3 sm:p-4">
+              <div class="max-h-[70vh] overflow-auto space-y-3 pr-1" id="email-list">
+                <!-- Loading skeletons -->
+                <div class="skeleton-row animate-pulse p-4 rounded-xl border border-slate-700 bg-slate-900/60">
+                  <div class="h-4 w-1/3 bg-slate-700 rounded mb-2"></div>
+                  <div class="h-3 w-2/3 bg-slate-800 rounded"></div>
+                </div>
+                <div class="skeleton-row animate-pulse p-4 rounded-xl border border-slate-700 bg-slate-900/60">
+                  <div class="h-4 w-1/3 bg-slate-700 rounded mb-2"></div>
+                  <div class="h-3 w-2/3 bg-slate-800 rounded"></div>
+                </div>
+                <div class="skeleton-row animate-pulse p-4 rounded-xl border border-slate-700 bg-slate-900/60">
+                  <div class="h-4 w-1/3 bg-slate-700 rounded mb-2"></div>
+                  <div class="h-3 w-2/3 bg-slate-800 rounded"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Preview / Actions -->
+          <div class="lg:col-span-7">
+            <div class="bg-slate-900/70 backdrop-blur border border-slate-700 rounded-2xl p-5 sm:p-7 h-full" id="email-preview">
+              <div class="flex flex-col items-center justify-center text-center py-20">
+                <Icon name="Mail" class="w-12 h-12 text-slate-500 mb-4" size={48} />
+                <h3 class="text-xl font-semibold">Select an email to preview</h3>
+                <p class="text-slate-400 mt-1">
+                  Choose a message on the left to view details and generate a reply.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-slate-800 px-6 lg:px-12 py-8 mt-10">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center space-x-3 mb-4 md:mb-0">
+          <img src="/logo_perfect.svg" alt="Loquitor Logo" class="h-8 w-auto" />
+          <span class="text-xl font-bold">Loquitor</span>
+        </div>
+        <div class="text-sm text-slate-500 flex items-center gap-4">
+          <span>© {new Date().getFullYear()} Loquitor, LLC. All rights reserved.</span>
+          <span class="text-slate-700">|</span>
+          <a href="/terms" class="hover:text-emerald-400 transition-colors">Terms</a>
+          <span class="text-slate-700">|</span>
+          <a href="/privacy" class="hover:text-emerald-400 transition-colors">Privacy</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // State
+    let emails = [];
+    let selectedEmailId = null;
+    let generatingId = null;
+
+    // Helper functions
+    function getHeader(email, name) {
+      const headers = email?.payload?.headers || [];
+      const h = headers.find((hdr) => hdr.name?.toLowerCase() === name.toLowerCase());
+      return h ? h.value : '';
+    }
+
+    function getSubject(email) {
+      return getHeader(email, 'subject') || '(No Subject)';
+    }
+
+    function getSnippet(email) {
+      return email?.snippet || '';
+    }
+
+    function getFrom(email) {
+      return getHeader(email, 'from') || 'Unknown sender';
+    }
+
+    function showError(message) {
+      const errorContainer = document.getElementById('error-container');
+      errorContainer.textContent = message;
+      errorContainer.classList.remove('hidden');
+    }
+
+    function hideError() {
+      document.getElementById('error-container').classList.add('hidden');
+    }
+
+    // Fetch emails
+    async function fetchEmails() {
+      const refreshBtn = document.getElementById('refresh-btn');
+      const refreshIcon = document.getElementById('refresh-icon');
+      const refreshText = document.getElementById('refresh-text');
+
+      refreshBtn.disabled = true;
+      refreshIcon.classList.add('animate-spin');
+      if (refreshText) refreshText.textContent = 'Refreshing…';
+      hideError();
+
+      try {
+        const response = await fetch('/api/inbox/messages');
+        const data = await response.json();
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            showError('Your session expired. Redirecting to login...');
+            setTimeout(() => (window.location.href = '/login'), 2000);
+            return;
+          }
+          throw new Error(data.error || 'Failed to fetch messages');
+        }
+
+        const list = data.messages || data || [];
+        emails = Array.isArray(list) ? list : [];
+
+        if (emails.length > 0 && !selectedEmailId) {
+          selectedEmailId = emails[0].id;
+        }
+
+        renderEmailList();
+        renderEmailPreview();
+      } catch (error) {
+        showError(error.message);
+      } finally {
+        refreshBtn.disabled = false;
+        refreshIcon.classList.remove('animate-spin');
+        if (refreshText) refreshText.textContent = 'Refresh';
+      }
+    }
+
+    // Render email list
+    function renderEmailList() {
+      const searchQuery = document.getElementById('search-input').value.trim().toLowerCase();
+      const filtered = emails.filter((email) => {
+        if (!searchQuery) return true;
+        const subject = getSubject(email).toLowerCase();
+        const snippet = getSnippet(email).toLowerCase();
+        const from = getFrom(email).toLowerCase();
+        return subject.includes(searchQuery) || snippet.includes(searchQuery) || from.includes(searchQuery);
+      });
+
+      const emailList = document.getElementById('email-list');
+
+      if (filtered.length === 0) {
+        emailList.innerHTML = `
+          <div class="flex flex-col items-center text-center py-16">
+            <svg class="w-10 h-10 text-slate-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+            <p class="text-slate-400">No emails found.</p>
+          </div>
+        `;
+        return;
+      }
+
+      emailList.innerHTML = filtered
+        .map((email) => {
+          const active = email.id === selectedEmailId;
+          return `
+            <button
+              class="email-card w-full text-left p-4 rounded-xl border transition-all ${
+                active
+                  ? 'border-emerald-500/40 bg-slate-800/60 shadow-md shadow-emerald-500/10'
+                  : 'border-slate-700 bg-slate-900/60 hover:bg-slate-800/50'
+              }"
+              data-email-id="${email.id}"
+            >
+              <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold ${
+                  active
+                    ? 'bg-gradient-to-br from-emerald-600 to-teal-600 text-white'
+                    : 'bg-slate-800 text-slate-300'
+                }">
+                  ${getFrom(email).slice(0, 1).toUpperCase()}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center justify-between gap-2">
+                    <p class="font-semibold truncate">${getSubject(email)}</p>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-1 truncate">${getFrom(email)}</p>
+                  <p class="text-sm text-slate-300 mt-2 line-clamp-2">${getSnippet(email)}</p>
+                </div>
+              </div>
+            </button>
+          `;
+        })
+        .join('');
+
+      // Add click handlers
+      document.querySelectorAll('.email-card').forEach((card) => {
+        card.addEventListener('click', () => {
+          selectedEmailId = card.dataset.emailId;
+          renderEmailList();
+          renderEmailPreview();
+        });
+      });
+    }
+
+    // Render email preview
+    function renderEmailPreview() {
+      const selectedEmail = emails.find((e) => e.id === selectedEmailId);
+      const emailPreview = document.getElementById('email-preview');
+
+      if (!selectedEmail) {
+        emailPreview.innerHTML = `
+          <div class="flex flex-col items-center justify-center text-center py-20">
+            <svg class="w-12 h-12 text-slate-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+            <h3 class="text-xl font-semibold">Select an email to preview</h3>
+            <p class="text-slate-400 mt-1">
+              Choose a message on the left to view details and generate a reply.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      emailPreview.innerHTML = `
+        <div class="mb-6">
+          <div class="inline-flex items-center space-x-2 px-3 py-1.5 bg-emerald-900/30 backdrop-blur rounded-full border border-emerald-500/30">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+            <span class="text-sm text-emerald-300">Message Preview</span>
+          </div>
+          <h2 class="text-2xl font-bold mt-4">${getSubject(selectedEmail)}</h2>
+          <p class="text-slate-400 mt-1">${getFrom(selectedEmail)}</p>
+        </div>
+
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-4 sm:p-5">
+          <p class="text-slate-300 whitespace-pre-line">
+            ${getSnippet(selectedEmail) || 'No snippet available.'}
+          </p>
+        </div>
+
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <button
+            id="generate-reply-btn"
+            class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 transition-all shadow-lg hover:shadow-emerald-500/25 disabled:opacity-70"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path>
+            </svg>
+            Generate Reply
+          </button>
+
+          <button
+            class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-slate-700 bg-slate-900/50 hover:bg-slate-800/60 transition-all"
+            onclick="alert('Coming soon ✨')"
+            type="button"
+          >
+            Draft Options
+          </button>
+        </div>
+      `;
+
+      // Add handler for generate reply
+      document.getElementById('generate-reply-btn').addEventListener('click', () => handleGenerateReply(selectedEmail));
+    }
+
+    // Generate AI reply
+    async function handleGenerateReply(email) {
+      if (!email || generatingId === email.id) return;
+
+      const btn = document.getElementById('generate-reply-btn');
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+        Generating…
+      `;
+
+      generatingId = email.id;
+
+      try {
+        const response = await fetch('/api/inbox/generate-reply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ emailId: email.id }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to generate reply');
+        }
+
+        alert('Draft reply (HTML):\n\n' + data.draft_html);
+      } catch (error) {
+        alert('Failed to generate reply: ' + error.message);
+      } finally {
+        generatingId = null;
+        btn.disabled = false;
+        btn.innerHTML = `
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path>
+          </svg>
+          Generate Reply
+        `;
+      }
+    }
+
+    // Logout
+    async function handleLogout() {
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' });
+        window.location.href = '/login';
+      } catch (error) {
+        console.error('Logout error:', error);
+        window.location.href = '/login';
+      }
+    }
+
+    // Event listeners
+    document.getElementById('logout-btn').addEventListener('click', handleLogout);
+    document.getElementById('logout-btn-mobile')?.addEventListener('click', handleLogout);
+    document.getElementById('refresh-btn').addEventListener('click', fetchEmails);
+    document.getElementById('search-input').addEventListener('input', () => {
+      renderEmailList();
+    });
+
+    // Initialize
+    fetchEmails();
+  </script>
 </BaseLayout>

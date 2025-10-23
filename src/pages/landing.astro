@@ -1,19 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Navigation from '../components/Navigation.astro';
 import Icon from '../components/Icon.astro';
 import { getVibeContent, consultationServices } from '../config/vibeContent';
 
 // Default to professional vibe server-side
 const defaultVibe = 'professional';
 const content = getVibeContent(defaultVibe);
-
-// Check if user is authenticated
-const isAuthenticated = !!Astro.locals.user;
 ---
 
 <BaseLayout title="Loquitor - AI Solutions Built for You">
-  <Navigation isAuthenticated={isAuthenticated} />
   <div class="min-h-screen" id="landing-page">
     <!-- Hero Section -->
     <section class="relative z-10 px-6 lg:px-12 py-20 lg:py-32 max-w-7xl mx-auto">
