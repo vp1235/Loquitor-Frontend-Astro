@@ -240,7 +240,7 @@ export const consultationServices = [
   {
     title: 'Rapid Prototyping',
     description: 'Fast proof-of-concept development to validate your AI initiatives',
-    icon: Zap,
+    icon: 'Zap',
     gradient: 'from-yellow-600 to-orange-600'
   }
 ];
