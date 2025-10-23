@@ -1,0 +1,148 @@
+---
+// Vibe dropdown component
+const VIBES = {
+  professional: {
+    id: 'professional',
+    name: 'Professional',
+    description: 'Enterprise-focused AI solutions',
+    icon: 'Briefcase'
+  },
+  dataScience: {
+    id: 'dataScience',
+    name: 'Data Science',
+    description: 'Statistics, big data, and model optimization',
+    icon: 'BarChart'
+  },
+  globalCommerce: {
+    id: 'globalCommerce',
+    name: 'Global Commerce',
+    description: 'Multilingual and cross-border capabilities',
+    icon: 'Globe'
+  },
+  securityFirst: {
+    id: 'securityFirst',
+    name: 'Security First',
+    description: 'Trust, compliance, and risk mitigation',
+    icon: 'ShieldCheck'
+  },
+  innovationLab: {
+    id: 'innovationLab',
+    name: 'Innovation Lab',
+    description: 'Cutting-edge semantic complexity and flexibility',
+    icon: 'Lightbulb'
+  }
+};
+---
+
+<div class="relative inline-block" id="vibe-dropdown-container">
+  <button
+    id="vibe-dropdown-button"
+    class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-all shadow-sm"
+    aria-expanded="false"
+    aria-haspopup="true"
+  >
+    <span class="text-sm font-medium" id="current-vibe-name">Professional</span>
+    <svg class="w-4 h-4 transition-transform" id="vibe-dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </button>
+
+  <div
+    id="vibe-dropdown-menu"
+    class="hidden absolute right-0 mt-2 w-72 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl z-50 overflow-hidden"
+    role="menu"
+  >
+    <div class="p-2 space-y-1">
+      {Object.entries(VIBES).map(([key, vibe]) => (
+        <button
+          class="vibe-option w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+          data-vibe={key}
+          role="menuitem"
+        >
+          <div class="font-medium text-sm">{vibe.name}</div>
+          <div class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">{vibe.description}</div>
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ VIBES }}>
+  // Initialize vibe from localStorage
+  let currentVibe = localStorage.getItem('loquitor-vibe') || 'professional';
+
+  const button = document.getElementById('vibe-dropdown-button');
+  const menu = document.getElementById('vibe-dropdown-menu');
+  const arrow = document.getElementById('vibe-dropdown-arrow');
+  const currentVibeName = document.getElementById('current-vibe-name');
+  const vibeOptions = document.querySelectorAll('.vibe-option');
+
+  // Update displayed vibe name
+  function updateVibeName() {
+    if (VIBES[currentVibe]) {
+      currentVibeName.textContent = VIBES[currentVibe].name;
+    }
+  }
+
+  // Toggle dropdown
+  function toggleDropdown() {
+    const isOpen = menu.classList.contains('hidden');
+    if (isOpen) {
+      menu.classList.remove('hidden');
+      arrow.style.transform = 'rotate(180deg)';
+      button.setAttribute('aria-expanded', 'true');
+    } else {
+      menu.classList.add('hidden');
+      arrow.style.transform = 'rotate(0deg)';
+      button.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  // Close dropdown
+  function closeDropdown() {
+    menu.classList.add('hidden');
+    arrow.style.transform = 'rotate(0deg)';
+    button.setAttribute('aria-expanded', 'false');
+  }
+
+  // Change vibe
+  function changeVibe(vibeId) {
+    currentVibe = vibeId;
+    localStorage.setItem('loquitor-vibe', vibeId);
+    updateVibeName();
+    closeDropdown();
+
+    // Dispatch custom event for vibe change
+    window.dispatchEvent(new CustomEvent('vibechange', { detail: { vibe: vibeId } }));
+  }
+
+  // Event listeners
+  button.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDropdown();
+  });
+
+  vibeOptions.forEach((option) => {
+    option.addEventListener('click', () => {
+      const vibeId = option.dataset.vibe;
+      changeVibe(vibeId);
+    });
+  });
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('vibe-dropdown-container').contains(e.target)) {
+      closeDropdown();
+    }
+  });
+
+  // Close on escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeDropdown();
+    }
+  });
+
+  // Initialize
+  updateVibeName();
+</script>

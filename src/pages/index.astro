@@ -293,9 +293,12 @@ const isAuthenticated = !!Astro.locals.user;
   </div>
 
   <script>
+    import { getVibeContent } from '../config/vibeContent.js';
+
     // Feature carousel animation
     let activeFeatureIndex = 0;
-    const featureCards = document.querySelectorAll('.feature-card');
+    let featureCards = document.querySelectorAll('.feature-card');
+    let carouselInterval;
 
     function cycleFeatures() {
       // Remove active class from all cards
@@ -308,17 +311,24 @@ const isAuthenticated = !!Astro.locals.user;
 
       // Add active class to current card
       const activeCard = featureCards[activeFeatureIndex];
-      activeCard.classList.add('active', 'bg-slate-100', 'dark:bg-slate-800/50', 'border', 'border-emerald-300', 'dark:border-emerald-500/30', 'shadow-lg');
-      activeCard.classList.remove('opacity-60');
-      const chevron = activeCard.querySelector('.chevron');
-      if (chevron) chevron.classList.remove('hidden');
+      if (activeCard) {
+        activeCard.classList.add('active', 'bg-slate-100', 'dark:bg-slate-800/50', 'border', 'border-emerald-300', 'dark:border-emerald-500/30', 'shadow-lg');
+        activeCard.classList.remove('opacity-60');
+        const chevron = activeCard.querySelector('.chevron');
+        if (chevron) chevron.classList.remove('hidden');
+      }
 
       // Move to next feature
       activeFeatureIndex = (activeFeatureIndex + 1) % featureCards.length;
     }
 
+    function startCarousel() {
+      if (carouselInterval) clearInterval(carouselInterval);
+      carouselInterval = setInterval(cycleFeatures, 4000);
+    }
+
     // Start the carousel
-    setInterval(cycleFeatures, 4000);
+    startCarousel();
 
     // Smooth scrolling for all scroll-to buttons
     document.querySelectorAll('[data-scroll-to]').forEach((button) => {
@@ -330,5 +340,70 @@ const isAuthenticated = !!Astro.locals.user;
         }
       });
     });
+
+    // Listen for vibe changes
+    window.addEventListener('vibechange', (event) => {
+      const vibeId = event.detail.vibe;
+      const content = getVibeContent(vibeId);
+
+      // Update hero section
+      document.getElementById('hero-badge-text').textContent = content.hero.badge.text;
+      document.getElementById('hero-title-line1').textContent = content.hero.title.line1;
+      document.getElementById('hero-title-line2').textContent = content.hero.title.line2;
+      document.getElementById('hero-subtitle').textContent = content.hero.subtitle;
+      document.getElementById('hero-primary-cta').textContent = content.hero.primaryCTA;
+      document.getElementById('hero-secondary-cta').textContent = content.hero.secondaryCTA;
+
+      // Update section titles
+      document.getElementById('section-title').textContent = content.sectionTitle;
+      document.getElementById('section-subtitle').textContent = content.sectionSubtitle;
+
+      // Update hero capabilities (feature cards)
+      const heroCapabilitiesContainer = document.getElementById('hero-capabilities');
+      heroCapabilitiesContainer.innerHTML = content.capabilities.map((cap, index) => `
+        <div
+          data-feature-index="${index}"
+          class="feature-card flex items-center space-x-4 p-4 rounded-lg transition-all duration-500 ${
+            index === 0 ? 'active bg-slate-100 dark:bg-slate-800/50 border border-emerald-300 dark:border-emerald-500/30 shadow-lg' : 'opacity-60'
+          }"
+        >
+          <div class="w-10 h-10 bg-gradient-to-br ${cap.gradient} rounded-lg flex items-center justify-center">
+            <span class="iconify w-5 h-5 text-white" data-icon="lucide:${cap.icon.toLowerCase().replace(/([A-Z])/g, '-$1').slice(1)}" data-width="20" data-height="20"></span>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-semibold text-sm">${cap.title}</h3>
+          </div>
+          <span class="chevron iconify w-5 h-5 text-emerald-600 dark:text-emerald-400 ${index === 0 ? '' : 'hidden'}" data-icon="lucide:chevron-right" data-width="20" data-height="20"></span>
+        </div>
+      `).join('');
+
+      // Update capabilities grid
+      const capabilitiesGrid = document.getElementById('capabilities-grid');
+      capabilitiesGrid.innerHTML = content.capabilities.map((capability) => `
+        <div class="group relative bg-white/80 dark:bg-slate-900/80 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-2xl p-8 hover:border-emerald-300 dark:hover:border-emerald-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10">
+          <div class="w-14 h-14 bg-gradient-to-br ${capability.gradient} rounded-xl flex items-center justify-center mb-6 shadow-lg">
+            <span class="iconify w-7 h-7 text-white" data-icon="lucide:${capability.icon.toLowerCase().replace(/([A-Z])/g, '-$1').slice(1)}" data-width="28" data-height="28"></span>
+          </div>
+          <h3 class="text-2xl font-bold mb-3">${capability.title}</h3>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">${capability.description}</p>
+        </div>
+      `).join('');
+
+      // Reinitialize feature cards and carousel
+      featureCards = document.querySelectorAll('.feature-card');
+      activeFeatureIndex = 0;
+      startCarousel();
+
+      // Reload iconify icons
+      if (window.Iconify) {
+        window.Iconify.scan();
+      }
+    });
+
+    // Initialize with saved vibe on page load
+    const savedVibe = localStorage.getItem('loquitor-vibe');
+    if (savedVibe && savedVibe !== 'professional') {
+      window.dispatchEvent(new CustomEvent('vibechange', { detail: { vibe: savedVibe } }));
+    }
   </script>
 </BaseLayout>
